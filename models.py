@@ -16,12 +16,18 @@ class Follows(db.Model):
 
     user_being_followed_id = db.Column(
         db.Integer,
+        # on delete cascade means that the child data is set to NULL when the parent
+        # data is deleted or updated. It is linked to the users.id and once that user 
+        # deletes their account the Foreign Key of the users id will be set to NULL.
         db.ForeignKey('users.id', ondelete="cascade"),
         primary_key=True,
     )
 
     user_following_id = db.Column(
         db.Integer,
+        # The 2 Foreign Keys are linked to the user id if user id is deleted both the user 
+        # being followed and user following id turns to NULL. Foreign Key values reference values
+        # in another table/ they are connected to another table's primary key.
         db.ForeignKey('users.id', ondelete="cascade"),
         primary_key=True,
     )
@@ -98,6 +104,7 @@ class User(db.Model):
 
     followers = db.relationship(
         "User",
+        # Relationship between the follows table user.followers
         secondary="follows",
         primaryjoin=(Follows.user_being_followed_id == id),
         secondaryjoin=(Follows.user_following_id == id)
@@ -105,6 +112,7 @@ class User(db.Model):
 
     following = db.relationship(
         "User",
+        # Relationship between the follows table user.following
         secondary="follows",
         primaryjoin=(Follows.user_following_id == id),
         secondaryjoin=(Follows.user_being_followed_id == id)

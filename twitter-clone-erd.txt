@@ -1,0 +1,28 @@
+User
+-
+id SERIAL PK
+email UNIQUE TEXT
+username UNIQUE TEXT
+image_url UNIQUE TEXT
+header_image_url UNIQUE TEXT
+bio TEXT
+location TEXT
+password TEXT
+
+Message
+-
+id SERIAL PK
+text STRING
+timestamp DATETIME
+user_id INTEGER FK >- User.id
+
+Follows
+-
+user_being_followed_id INTEGER FK >- User.id
+user_following_id INTEGER FK >- User.id
+
+Likes
+-
+id SERIAL PK
+user_id INTEGER FK >- User.id
+message_id INTEGER FK >- Message.id
