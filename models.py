@@ -129,6 +129,9 @@ class User(db.Model):
     def is_followed_by(self, other_user):
         """Is this user followed by `other_user`?"""
 
+        # Gets the whole block of the user's details not just checking by an id
+        # If checking by id
+        # [user for user in self.followers if user == user.query.get(other_user)]
         found_user_list = [user for user in self.followers if user == other_user]
         return len(found_user_list) == 1
 
