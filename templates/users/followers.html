@@ -1,5 +1,4 @@
 {% extends 'users/detail.html' %}
-
 {% block user_details %}
   <div class="col-sm-9">
     <div class="row">
@@ -30,7 +29,7 @@
                 {% endif %}
 
               </div>
-              <p class="card-bio">BIO HERE</p>
+              <p class="card-bio">{{ follower.bio }}</p>
             </div>
           </div>
         </div>
