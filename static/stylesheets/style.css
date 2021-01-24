@@ -297,6 +297,10 @@ nav + .container {
   }
 }
 
+.fa-map-marker {
+  margin-right: 8px;
+}
+
 .user-location {
   color: #657786;
 }
