@@ -179,12 +179,6 @@ class User(db.Model):
                 return user
 
         return False
-    
-    @classmethod
-    def check_password(cls, user_password, form_password):
-        if bcrypt.check_password_hash(user_password, form_password):
-            return True
-        return False
 
 
 class Message(db.Model):

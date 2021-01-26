@@ -209,39 +209,39 @@ def stop_following(follow_id):
     return redirect(f"/users/{g.user.id}/following")
 
 
-@app.route('/users/profile/<int:user_id>', methods=["GET", "POST"])
-def profile(user_id):
+@app.route('/users/profile', methods=["GET", "POST"])
+def edit_profile():
     """Update profile for current user."""
     # IMPLEMENT THIS
-    if not g.user or g.user.id != user_id:
+    if not g.user:
         flash("Access unauthorized.", "danger")
         return redirect("/")
     
-    user = User.query.get_or_404(user_id)
+    user = g.user
     form = UserEditForm(obj=user)
 
     if form.validate_on_submit():
 
-        if User.check_password(g.user.password, form.password.data):
+        if User.authenticate(user.username, form.password.data):
             
             try: 
                 user.username = form.username.data
                 user.email = form.email.data
-                user.image_url = User.image_url.default.arg if not form.image_url.data else form.image_url.data
-                user.header_image_url = User.header_image_url.default.arg if not form.header_image_url.data else form.header_image_url.data
+                user.image_url = form.image_url.data or User.image_url.default.arg
+                user.header_image_url = form.header_image_url.data or User.header_image_url.default.arg
                 user.bio = form.bio.data
 
                 db.session.commit()
         
             except IntegrityError:
-                flash('Username already taken', 'danger')
+                flash('Username or Email Address is already taken', 'danger')
                 db.session.rollback()
-                return redirect(f'/users/profile/{g.user.id}')
+                return redirect(f'/users/profile')
             
             return redirect(f'/users/{g.user.id}')
         else:
             flash('Invalid Password', 'danger')
-            return redirect(f'/users/profile/{g.user.id}')
+            return redirect(f'/users/profile')
     
     else:
         return render_template('users/edit.html', user=user, form=form)
