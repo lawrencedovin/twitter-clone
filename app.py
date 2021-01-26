@@ -223,13 +223,20 @@ def profile(user_id):
     if form.validate_on_submit():
 
         if User.check_password(g.user.password, form.password.data):
-            user.username = form.username.data
-            user.email = form.email.data
-            user.image_url = User.image_url.default.arg if not form.image_url.data else form.image_url.data
-            user.header_image_url = User.header_image_url.default.arg if not form.header_image_url.data else form.header_image_url.data
-            user.bio = form.bio.data
+            
+            try: 
+                user.username = form.username.data
+                user.email = form.email.data
+                user.image_url = User.image_url.default.arg if not form.image_url.data else form.image_url.data
+                user.header_image_url = User.header_image_url.default.arg if not form.header_image_url.data else form.header_image_url.data
+                user.bio = form.bio.data
 
-            db.session.commit()
+                db.session.commit()
+        
+            except IntegrityError:
+                flash('Username already taken', 'danger')
+                return redirect(f'/users/profile/{g.user.id}')
+            
             return redirect(f'/users/{g.user.id}')
         else:
             flash('Invalid Password', 'danger')
