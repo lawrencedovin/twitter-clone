@@ -235,6 +235,7 @@ def profile(user_id):
         
             except IntegrityError:
                 flash('Username already taken', 'danger')
+                db.session.rollback()
                 return redirect(f'/users/profile/{g.user.id}')
             
             return redirect(f'/users/{g.user.id}')
