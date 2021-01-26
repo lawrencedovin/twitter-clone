@@ -213,7 +213,7 @@ def stop_following(follow_id):
 def profile(user_id):
     """Update profile for current user."""
     # IMPLEMENT THIS
-    if not g.user:
+    if not g.user or g.user.id != user_id:
         flash("Access unauthorized.", "danger")
         return redirect("/")
     
