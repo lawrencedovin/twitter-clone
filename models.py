@@ -79,12 +79,12 @@ class User(db.Model):
 
     image_url = db.Column(
         db.Text,
-        default="/static/images/default-pic.png",
+        default="https://lh3.googleusercontent.com/proxy/X054Ddh9Rzoeug0_kdg0am3ucXhP8-65MLizGAYylun6S5o4Sf0MFrpXNHSeOzf7dVdrcdRd_h7n_uP04JRAnpXRsUsT3rw",
     )
 
     header_image_url = db.Column(
         db.Text,
-        default="/static/images/warbler-hero.jpg"
+        default="https://abcbirds.org/wp-content/uploads/2015/03/Cerulean-Warbler_Tessa-Nickels.jpg"
     )
 
     bio = db.Column(

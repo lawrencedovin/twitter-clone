@@ -221,12 +221,12 @@ def profile(user_id):
     form = UserEditForm(obj=user)
 
     if form.validate_on_submit():
-        
+
         if User.check_password(g.user.password, form.password.data):
             user.username = form.username.data
             user.email = form.email.data
-            user.image_url = form.image_url.data
-            user.header_image_url = form.header_image_url.data
+            user.image_url = User.image_url.default.arg if not form.image_url.data else form.image_url.data
+            user.header_image_url = User.header_image_url.default.arg if not form.header_image_url.data else form.header_image_url.data
             user.bio = form.bio.data
 
             db.session.commit()
