@@ -217,6 +217,27 @@ def stop_following(follow_id):
 
     return redirect(f"/users/{g.user.id}/following")
 
+@app.route('/users/<int:user_id>/likes')
+def show_likes(user_id):
+    """Show list of liked message by this user."""
+
+    if not g.user:
+        flash("Access unauthorized.", "danger")
+        return redirect("/")
+
+    user = User.query.get_or_404(user_id)
+
+    liked_messages_ids = [liked_message.id for liked_message in user.likes]
+
+    messages = (Message
+                .query
+                .filter(Message.id.in_(liked_messages_ids))
+                .order_by(Message.timestamp.desc())
+                .limit(100)
+                .all())
+
+    return render_template('users/liked-messages.html', user=user, messages=messages)
+
 @app.route('/users/add_like/<int:message_id>', methods=['POST'])
 def like_message(message_id):
     """Add a like for a message."""
