@@ -79,7 +79,7 @@ class User(db.Model):
 
     image_url = db.Column(
         db.Text,
-        default="https://cdn.flamp.ru/a75dc4397a923569670220fabf2bc2e7_640.png",
+        default="/static/images/default-pic.png",
     )
 
     header_image_url = db.Column(
