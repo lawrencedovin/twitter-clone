@@ -200,7 +200,7 @@ def add_follow(follow_id):
     g.user.following.append(followed_user)
     db.session.commit()
 
-    return redirect(f"/users/{g.user.id}/following")
+    return redirect(request.referrer)
 
 
 @app.route('/users/stop-following/<int:follow_id>', methods=['POST'])
@@ -215,7 +215,7 @@ def stop_following(follow_id):
     g.user.following.remove(followed_user)
     db.session.commit()
 
-    return redirect(f"/users/{g.user.id}/following")
+    return redirect(request.referrer)
 
 @app.route('/users/<int:user_id>/likes')
 def show_likes(user_id):
