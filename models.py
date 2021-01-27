@@ -79,7 +79,7 @@ class User(db.Model):
 
     image_url = db.Column(
         db.Text,
-        default="https://lh3.googleusercontent.com/proxy/X054Ddh9Rzoeug0_kdg0am3ucXhP8-65MLizGAYylun6S5o4Sf0MFrpXNHSeOzf7dVdrcdRd_h7n_uP04JRAnpXRsUsT3rw",
+        default="https://cdn.flamp.ru/a75dc4397a923569670220fabf2bc2e7_640.png",
     )
 
     header_image_url = db.Column(
