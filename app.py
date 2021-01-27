@@ -217,7 +217,7 @@ def stop_following(follow_id):
 
     return redirect(f"/users/{g.user.id}/following")
 
-@app.route('users/add_like/<int:message_id>', methods=['POST'])
+@app.route('/users/add_like/<int:message_id>', methods=['POST'])
 def like_message(message_id):
     """Add a like for a message."""
 
@@ -231,7 +231,7 @@ def like_message(message_id):
 
     return redirect('/')
 
-@app.route('users/remove_like/<int:message_id>', methods=['POST'])
+@app.route('/users/remove_like/<int:message_id>', methods=['POST'])
 def remove_like_message(message_id):
     """Remove a like for a message."""
 
