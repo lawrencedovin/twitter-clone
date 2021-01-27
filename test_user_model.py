@@ -26,33 +26,54 @@ from app import app
 # once for all tests --- in each test, we'll delete the data
 # and create fresh new clean test data
 
-db.create_all()
-
-
 class UserModelTestCase(TestCase):
     """Test views for messages."""
 
     def setUp(self):
         """Create test client, add sample data."""
 
-        User.query.delete()
-        Message.query.delete()
-        Follows.query.delete()
+        db.drop_all()
+        db.create_all()
+
+        user1 = User(
+            email="user1@gmail.com",
+            username="user1",
+            password="HASHED_PASSWORD"
+        )
+
+        user2 = User(
+            email="user2@gmail.com",
+            username="user2",
+            password="123"
+        )
+
+        db.session.add_all([user1, user2])
+        db.session.commit()
+
+        user1 = User.query.get(1)
+        user2 = User.query.get(2)
+
+        self.user1 = user1
+        self.user2 = user2 
 
         self.client = app.test_client()
 
     def test_user_model(self):
         """Does basic model work?"""
 
-        u = User(
-            email="test@test.com",
-            username="testuser",
+        test_user = User(
+            email="test@gmail.com",
+            username="test",
             password="HASHED_PASSWORD"
         )
 
-        db.session.add(u)
+        db.session.add(test_user)
         db.session.commit()
 
         # User should have no messages & no followers
-        self.assertEqual(len(u.messages), 0)
-        self.assertEqual(len(u.followers), 0)
+        self.assertEqual(len(test_user.messages), 0)
+        self.assertEqual(len(test_user.followers), 0)
+        self.assertEqual(repr(self.user1), '<User #1: user1, user1@gmail.com>')
+    
+    # def test_user_repr(self):
+    #     self.assertEqual(repr(self.user1), '<User #1: user1, user1@gmail.com>')
