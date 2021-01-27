@@ -217,6 +217,19 @@ def stop_following(follow_id):
 
     return redirect(f"/users/{g.user.id}/following")
 
+@app.route('users/add_like/<int:message_id>', methods=['POST'])
+def like_message(message_id):
+    """Add a like for a message"""
+
+    if not g.user:
+        flash('Access unauthorized.', 'danger')
+        return redirect('/')
+
+    liked_message = Message.query.get_or_404(message_id)
+    g.user.likes.append(liked_message)
+    db.session.commit()
+
+
 
 @app.route('/users/profile', methods=["GET", "POST"])
 def edit_profile():
