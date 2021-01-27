@@ -28,12 +28,18 @@ connect_db(app)
 ##############################################################################
 # User signup/login/logout
 
-
+# @app.before_request decorator allows us to create a function 
+# that will run before each request. Before each page loads when being
+# directed to a route it sets the global user variable to the current user in session
+# If there's no session/ user is not logged in then g.user is set to None.
+# Performs the function before being redirected
 @app.before_request
 def add_user_to_g():
     """If we're logged in, add current user to Flask global."""
 
     if CURR_USER_KEY in session:
+        # session is carried across request/ per client data while g is per requested data
+        # g exists across all of your request, the data is not transferred over like a session between requests 
         g.user = User.query.get(session[CURR_USER_KEY])
 
     else:
@@ -80,6 +86,8 @@ def signup():
         except IntegrityError:
             flash("Username already taken", 'danger')
             return render_template('users/signup.html', form=form)
+
+        # if validated sets session[CURR_USER_KEY] = user.id before redirecting
         do_login(user)
 
         return redirect("/")
@@ -99,6 +107,7 @@ def login():
                                  form.password.data)
 
         if user:
+            # if validated sets session[CURR_USER_KEY] = user.id before redirecting
             do_login(user)
             flash(f"Hello, {user.username}!", "success")
             return redirect("/")
