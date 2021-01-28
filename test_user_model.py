@@ -122,3 +122,19 @@ class UserModelTestCase(TestCase):
         with self.assertRaises(ValueError) as context:
             User.signup('invalid_user', 'invalid_user@gmail.com', None, None)
             db.session.commit()
+
+    ####
+    #
+    # Authentication Tests
+    #
+    ####
+    def test_valid_authentication(self):
+        user1 = User.authenticate(self.user1.username, "HASHED_PASSWORD")
+        self.assertIsNotNone(user1)
+        self.assertEqual(user1.id, self.user1.id)
+    
+    def test_invalid_username(self):
+        self.assertFalse(User.authenticate("pokeflute", "password"))
+
+    def test_wrong_password(self):
+        self.assertFalse(User.authenticate(self.user1.username, "badpassword"))
