@@ -35,19 +35,9 @@ class UserModelTestCase(TestCase):
         db.drop_all()
         db.create_all()
 
-        user1 = User(
-            email="user1@gmail.com",
-            username="user1",
-            password="HASHED_PASSWORD"
-        )
+        user1 = User.signup("user1", "user1@gmail.com", "HASHED_PASSWORD", None)
+        user2 = User.signup("user2", "user2@gmail.com", "123", None)
 
-        user2 = User(
-            email="user2@gmail.com",
-            username="user2",
-            password="123"
-        )
-
-        db.session.add_all([user1, user2])
         db.session.commit()
 
         user1 = User.query.get(1)
@@ -73,7 +63,6 @@ class UserModelTestCase(TestCase):
         # User should have no messages & no followers
         self.assertEqual(len(test_user.messages), 0)
         self.assertEqual(len(test_user.followers), 0)
+        # Tests if repr method for user is correct
+        self.assertEqual(repr(test_user), '<User #3: test, test@gmail.com>')
         self.assertEqual(repr(self.user1), '<User #1: user1, user1@gmail.com>')
-    
-    # def test_user_repr(self):
-    #     self.assertEqual(repr(self.user1), '<User #1: user1, user1@gmail.com>')
