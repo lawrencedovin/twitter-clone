@@ -60,3 +60,26 @@ class UserModelTestCase(TestCase):
         # User should have 1 message
         self.assertEqual(len(self.test_user.messages), 1)
         self.assertEqual(self.test_user.messages[0].text, "Warble warble")
+
+    def test_message_likes(self):
+        message1 = Message(
+            text="Warble warble",
+            user_id=self.test_user.id
+        )
+
+        message2 = Message(
+            text="Insert warble here",
+            user_id=self.test_user.id
+        )
+
+        ashe = User.signup("ashe_ketchup", "ashe_ketchup@pokemon.com", "password", None)
+        db.session.add_all([message1, message2, ashe])
+        db.session.commit()
+
+        ashe.likes.append(message1)
+
+        db.session.commit()
+
+        likes = Likes.query.filter(Likes.user_id == ashe.id).all()
+        self.assertEqual(len(likes), 1)
+        self.assertEqual(likes[0].message_id, message1.id)
