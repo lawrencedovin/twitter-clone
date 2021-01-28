@@ -142,3 +142,28 @@ class MessageViewTestCase(TestCase):
             likes = Likes.query.filter(Likes.message_id==1984).all()
             self.assertEqual(len(likes), 1)
             self.assertEqual(likes[0].user_id, self.test_user.id)
+
+    def test_remove_like(self):
+        self.setup_likes()
+
+        message = Message.query.filter(Message.text=="Tweet tweet").one()
+        self.assertIsNotNone(message)
+        self.assertNotEqual(message.user_id, self.test_user.id)
+
+        like = Likes.query.filter(
+            Likes.user_id==self.user1.id and Likes.message_id==message.id
+        ).one()
+
+        # Now we are sure that user1 likes the message "Tweet tweet"
+        self.assertIsNotNone(like)
+
+        with self.client as client:
+            with client.session_transaction() as sess:
+                sess[CURR_USER_KEY] = self.user1.id
+
+            response = client.post(f"/users/remove_like/{message.id}", follow_redirects=True)
+            self.assertEqual(response.status_code, 200)
+
+            likes = Likes.query.filter(Likes.message_id==message.id).all()
+            # the like has been deleted
+            self.assertEqual(len(likes), 0)
