@@ -167,3 +167,20 @@ class MessageViewTestCase(TestCase):
             likes = Likes.query.filter(Likes.message_id==message.id).all()
             # the like has been deleted
             self.assertEqual(len(likes), 0)
+
+    def test_unauthenticated_like(self):
+        self.setup_likes()
+
+        message = Message.query.filter(Message.text=="Tweet tweet").one()
+        self.assertIsNotNone(message)
+
+        like_count = Likes.query.count()
+
+        with self.client as client:
+            response = client.post(f"/users/add_like/{message.id}", follow_redirects=True)
+            self.assertEqual(response.status_code, 200)
+
+            self.assertIn("Access unauthorized", str(response.data))
+
+            # The number of likes has not changed since making the request
+            self.assertEqual(like_count, Likes.query.count())
