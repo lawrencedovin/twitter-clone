@@ -40,7 +40,7 @@ class UserModelTestCase(TestCase):
         test_user = User.signup("test_user", "test_user@gmail.com", "password", None)
         db.session.commit()
 
-        self.test_user = User.query.get(self.test_user.id)
+        self.test_user = User.query.get(test_user.id)
 
         self.client = app.test_client()
 
@@ -48,3 +48,15 @@ class UserModelTestCase(TestCase):
         response = super().tearDown()
         db.session.rollback()
         return response
+
+    def test_message_model(self):
+        """Does basic model work?"""
+        
+        message = Message(text="Warble warble", user_id=self.test_user.id)
+
+        db.session.add(message)
+        db.session.commit()
+
+        # User should have 1 message
+        self.assertEqual(len(self.test_user.messages), 1)
+        self.assertEqual(self.test_user.messages[0].text, "Warble warble")
