@@ -48,6 +48,11 @@ class UserModelTestCase(TestCase):
 
         self.client = app.test_client()
 
+    def tearDown(self):
+        res = super().tearDown()
+        db.session.rollback()
+        return res
+
     def test_user_model(self):
         """Does basic model work?"""
 
@@ -66,3 +71,18 @@ class UserModelTestCase(TestCase):
         # Tests if repr method for user is correct
         self.assertEqual(repr(test_user), '<User #3: test, test@gmail.com>')
         self.assertEqual(repr(self.user1), '<User #1: user1, user1@gmail.com>')
+    
+    ####
+    #
+    # Following tests
+    #
+    ####
+    def test_user_follow(self):
+        self.user1.following.append(self.user2)
+        db.session.commit()
+
+        self.assertEqual(len(self.user1.following), 1)
+        self.assertEqual(len(self.user1.followers), 0)
+
+        self.assertEqual(len(self.user2.following), 0)
+        self.assertEqual(len(self.user2.followers), 1)
