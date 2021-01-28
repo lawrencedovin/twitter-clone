@@ -184,3 +184,37 @@ class MessageViewTestCase(TestCase):
 
             # The number of likes has not changed since making the request
             self.assertEqual(like_count, Likes.query.count())
+    
+    def setup_followers(self):
+        follower1 = Follows(user_being_followed_id=self.user1.id, user_following_id=self.test_user.id)
+        follower2 = Follows(user_being_followed_id=self.user2.id, user_following_id=self.test_user.id)
+        follower3 = Follows(user_being_followed_id=self.test_user.id, user_following_id=self.user1.id)
+
+        db.session.add_all([follower1,follower2,follower3])
+        db.session.commit()
+
+    def test_user_show_with_follows(self):
+
+        self.setup_followers()
+
+        with self.client as client:
+            response = client.get(f"/users/{self.test_user.id}")
+
+            self.assertEqual(response.status_code, 200)
+
+            self.assertIn("@test_user", str(response.data))
+            soup = BeautifulSoup(str(response.data), 'html.parser')
+            found = soup.find_all("li", {"class": "stat"})
+            self.assertEqual(len(found), 4)
+
+            # test for a count of 0 messages
+            self.assertIn("0", found[0].text)
+
+            # Test for a count of 2 following
+            self.assertIn("2", found[1].text)
+
+            # Test for a count of 1 follower
+            self.assertIn("1", found[2].text)
+
+            # Test for a count of 0 likes
+            self.assertIn("0", found[3].text)
