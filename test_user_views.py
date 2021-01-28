@@ -232,3 +232,17 @@ class MessageViewTestCase(TestCase):
             self.assertIn("@user2", str(response.data))
             self.assertNotIn("@user3", str(response.data))
             self.assertNotIn("@user4", str(response.data))
+
+    def test_show_followers(self):
+
+        self.setup_followers()
+        with self.client as client:
+            with client.session_transaction() as sess:
+                sess[CURR_USER_KEY] = self.test_user.id
+
+            response = client.get(f"/users/{self.test_user.id}/followers")
+
+            self.assertIn("@user1", str(response.data))
+            self.assertNotIn("@user2", str(response.data))
+            self.assertNotIn("@user3", str(response.data))
+            self.assertNotIn("@user4", str(response.data))
