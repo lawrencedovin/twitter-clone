@@ -218,3 +218,17 @@ class MessageViewTestCase(TestCase):
 
             # Test for a count of 0 likes
             self.assertIn("0", found[3].text)
+
+    def test_show_following(self):
+
+        self.setup_followers()
+        with self.client as client:
+            with client.session_transaction() as sess:
+                sess[CURR_USER_KEY] = self.test_user.id
+
+            response = client.get(f"/users/{self.test_user.id}/following")
+            self.assertEqual(response.status_code, 200)
+            self.assertIn("@user1", str(response.data))
+            self.assertIn("@user2", str(response.data))
+            self.assertNotIn("@user3", str(response.data))
+            self.assertNotIn("@user4", str(response.data))
