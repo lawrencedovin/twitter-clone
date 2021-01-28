@@ -86,3 +86,25 @@ class MessageViewTestCase(TestCase):
             response = client.post("/messages/new", data={"text": "Hello"}, follow_redirects=True)
             self.assertEqual(response.status_code, 200)
             self.assertIn("Access unauthorized", str(response.data))
+
+    def test_message_show(self):
+
+        message = Message(
+            id=1234,
+            text="I want pizza",
+            user_id=self.testuser.id
+        )
+        
+        db.session.add(message)
+        db.session.commit()
+
+        with self.client as client:
+            with client.session_transaction() as sess:
+                sess[CURR_USER_KEY] = self.testuser.id
+            
+            message = Message.query.get(1234)
+
+            response = client.get(f'/messages/{message.id}')
+
+            self.assertEqual(response.status_code, 200)
+            self.assertIn(message.text, str(response.data))
