@@ -86,3 +86,6 @@ class UserModelTestCase(TestCase):
 
         self.assertEqual(len(self.user2.following), 0)
         self.assertEqual(len(self.user2.followers), 1)
+
+        self.assertEqual(self.user1.following[0].id, self.user2.id)
+        self.assertEqual(self.user2.followers[0].id, self.user1.id)
