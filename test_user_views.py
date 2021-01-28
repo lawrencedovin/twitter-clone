@@ -45,6 +45,7 @@ class MessageViewTestCase(TestCase):
         self.client = app.test_client()
 
         self.test_user = User.signup("test_user", "test_user@gmail.com", "123", None)
+        self.secret = User.signup("secret", "secret@gmail.com", "password", None)
         self.user1 = User.signup("user1", "user1@gmail.com", "password", None)
         self.user2 = User.signup("user2", "user2@gmail.com", "password", None)
         self.user3 = User.signup("user3", "user3@gmail.com", "password", None)
@@ -61,7 +62,20 @@ class MessageViewTestCase(TestCase):
             response = client.get("/users")
 
             self.assertIn("@test_user", str(response.data))
+            self.assertIn("@secret", str(response.data))
             self.assertIn("@user1", str(response.data))
             self.assertIn("@user2", str(response.data))
             self.assertIn("@user3", str(response.data))
             self.assertIn("@user4", str(response.data))
+
+    def test_users_search(self):
+        with self.client as client:
+            response = client.get("/users?q=user")
+
+            self.assertIn("@test_user", str(response.data))
+            self.assertIn("@user1", str(response.data))
+            self.assertIn("@user2", str(response.data))
+            self.assertIn("@user3", str(response.data))
+            self.assertIn("@user4", str(response.data))       
+
+            self.assertNotIn("@secret", str(response.data))
