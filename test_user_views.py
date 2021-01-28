@@ -246,3 +246,14 @@ class MessageViewTestCase(TestCase):
             self.assertNotIn("@user2", str(response.data))
             self.assertNotIn("@user3", str(response.data))
             self.assertNotIn("@user4", str(response.data))
+
+    def test_unauthorized_following_page_access(self):
+        self.setup_followers()
+        with self.client as client:
+            # User doesn't have a session key which means the user isn't logged in and redirects
+            # to homepage with Access unauthorized flashed
+
+            response = client.get(f"/users/{self.test_user.id}/following", follow_redirects=True)
+            self.assertEqual(response.status_code, 200)
+            self.assertNotIn("@user1", str(response.data))
+            self.assertIn("Access unauthorized", str(response.data))
