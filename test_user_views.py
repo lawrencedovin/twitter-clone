@@ -87,3 +87,15 @@ class MessageViewTestCase(TestCase):
             self.assertEqual(response.status_code, 200)
 
             self.assertIn("@test_user", str(response.data))
+
+    def setup_likes(self):
+        message1 = Message(text="Pizza is good", user_id=self.test_user.id)
+        message2 = Message(text="Eating some lunch", user_id=self.test_user.id)
+        message3 = Message(id=123, text="Tweet tweet", user_id=self.user1.id)
+        db.session.add_all([message1, message2, message3])
+        db.session.commit()
+
+        like1 = Likes(user_id=self.test_user.id, message_id=123)
+
+        db.session.add(like1)
+        db.session.commit()
