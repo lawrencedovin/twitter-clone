@@ -77,3 +77,12 @@ class MessageViewTestCase(TestCase):
             response = client.post("/messages/new", data={"text": "Hello"}, follow_redirects=True)
             self.assertEqual(response.status_code, 200)
             self.assertIn("Access unauthorized", str(response.data))
+
+    def test_add_invalid_user(self):
+        with self.client as client:
+            with client.session_transaction() as sess:
+                sess[CURR_USER_KEY] = 350 # user does not exist
+
+            response = client.post("/messages/new", data={"text": "Hello"}, follow_redirects=True)
+            self.assertEqual(response.status_code, 200)
+            self.assertIn("Access unauthorized", str(response.data))
