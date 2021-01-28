@@ -9,7 +9,7 @@ import os
 from unittest import TestCase
 
 from models import db, connect_db, Message, User, Likes, Follows
-from bs4 import BeautifulSoup
+# from bs4 import BeautifulSoup
 
 # BEFORE we import our app, let's set an environmental variable
 # to use a different database for tests (we need to do this
@@ -55,3 +55,13 @@ class MessageViewTestCase(TestCase):
         resp = super().tearDown()
         db.session.rollback()
         return resp
+
+    def test_users_index(self):
+        with self.client as client:
+            response = client.get("/users")
+
+            self.assertIn("@test_user", str(response.data))
+            self.assertIn("@user1", str(response.data))
+            self.assertIn("@user2", str(response.data))
+            self.assertIn("@user3", str(response.data))
+            self.assertIn("@user4", str(response.data))
