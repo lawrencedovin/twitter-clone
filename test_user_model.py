@@ -89,3 +89,16 @@ class UserModelTestCase(TestCase):
 
         self.assertEqual(self.user1.following[0].id, self.user2.id)
         self.assertEqual(self.user2.followers[0].id, self.user1.id)
+    
+    def test_valid_signup(self):
+        valid_user = User.signup('valid_user', 'valid_user@gmail.com', 'ketchup', None)
+        valid_user.id = 123
+        db.session.commit()
+
+        validated_user = User.query.get(123)
+
+        self.assertEqual(validated_user.username, 'valid_user')
+        self.assertEqual(validated_user.email, 'valid_user@gmail.com')
+        self.assertEqual(validated_user.id, 123)
+        # Bcrypt strings should start with $2b$
+        self.assertTrue(validated_user.password.startswith('$2b$'))
