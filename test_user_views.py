@@ -257,3 +257,12 @@ class MessageViewTestCase(TestCase):
             self.assertEqual(response.status_code, 200)
             self.assertNotIn("@user1", str(response.data))
             self.assertIn("Access unauthorized", str(response.data))
+
+    def test_unauthorized_followers_page_access(self):
+        self.setup_followers()
+        with self.client as client:
+
+            response = client.get(f"/users/{self.test_user.id}/followers", follow_redirects=True)
+            self.assertEqual(response.status_code, 200)
+            self.assertNotIn("@user1", str(response.data))
+            self.assertIn("Access unauthorized", str(response.data))
