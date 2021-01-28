@@ -79,3 +79,11 @@ class MessageViewTestCase(TestCase):
             self.assertIn("@user4", str(response.data))       
 
             self.assertNotIn("@secret", str(response.data))
+
+    def test_user_page(self):
+        with self.client as client:
+            response = client.get(f"/users/{self.test_user.id}")
+
+            self.assertEqual(response.status_code, 200)
+
+            self.assertIn("@test_user", str(response.data))
