@@ -118,4 +118,24 @@ class MessageViewTestCase(TestCase):
 
             self.assertEqual(response.status_code, 404)
 
+    def test_message_delete(self):
+
+        message = Message(
+            id=1234,
+            text="Reeses",
+            user_id=self.testuser.id
+        )
+        db.session.add(message)
+        db.session.commit()
+
+        with self.client as client:
+            with client.session_transaction() as sess:
+                sess[CURR_USER_KEY] = self.testuser.id
+
+            response = client.post("/messages/1234/delete", follow_redirects=True)
+            self.assertEqual(response.status_code, 200)
+
+            message = Message.query.get(1234)
+            self.assertIsNone(message)
+
 
