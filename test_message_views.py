@@ -108,3 +108,14 @@ class MessageViewTestCase(TestCase):
 
             self.assertEqual(response.status_code, 200)
             self.assertIn(message.text, str(response.data))
+
+    def test_invalid_message_show(self):
+        with self.client as client:
+            with client.session_transaction() as sess:
+                sess[CURR_USER_KEY] = self.testuser.id
+            
+            response = client.get('/messages/99999999')
+
+            self.assertEqual(response.status_code, 404)
+
+
