@@ -153,6 +153,7 @@ class MessageViewTestCase(TestCase):
             text="Testing 123 testing mic check",
             user_id=self.testuser.id
         )
+
         db.session.add_all([user, message])
         db.session.commit()
 
@@ -160,6 +161,25 @@ class MessageViewTestCase(TestCase):
             with client.session_transaction() as sess:
                 sess[CURR_USER_KEY] = 76543
 
+            response = client.post("/messages/1234/delete", follow_redirects=True)
+            self.assertEqual(response.status_code, 200)
+            self.assertIn("Access unauthorized", str(response.data))
+
+            message = Message.query.get(1234)
+            self.assertIsNotNone(message)
+
+    def test_message_delete_no_authentication(self):
+
+        message = Message(
+            id=1234,
+            text="Ranch",
+            user_id=self.testuser.id
+        )
+
+        db.session.add(message)
+        db.session.commit()
+
+        with self.client as client:
             response = client.post("/messages/1234/delete", follow_redirects=True)
             self.assertEqual(response.status_code, 200)
             self.assertIn("Access unauthorized", str(response.data))
