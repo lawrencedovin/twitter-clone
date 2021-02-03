@@ -251,7 +251,7 @@ def like_message(message_id):
     db.session.commit()
 
     # return redirect(request.referrer) check test_user_views
-    return redirect('/')
+    return redirect(request.referrer)
 
 @app.route('/users/remove_like/<int:message_id>', methods=['POST'])
 def remove_like_message(message_id):
@@ -266,7 +266,7 @@ def remove_like_message(message_id):
     db.session.commit()
 
     # how can you fix this to return redirect(request.referrer) instead check test_user_views
-    return redirect('/')
+    return redirect(request.referrer)
 
 
 @app.route('/users/profile', methods=["GET", "POST"])

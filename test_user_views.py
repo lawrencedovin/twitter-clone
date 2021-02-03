@@ -136,8 +136,8 @@ class MessageViewTestCase(TestCase):
             with client.session_transaction() as sess:
                 sess[CURR_USER_KEY] = self.test_user.id
 
-            response = client.post("/users/add_like/1984", follow_redirects=True)
-            self.assertEqual(response.status_code, 200)
+            response = client.post("/users/add_like/1984")
+            self.assertEqual(response.status_code, 302)
 
             likes = Likes.query.filter(Likes.message_id==1984).all()
             self.assertEqual(len(likes), 1)
@@ -161,8 +161,8 @@ class MessageViewTestCase(TestCase):
             with client.session_transaction() as sess:
                 sess[CURR_USER_KEY] = self.user1.id
 
-            response = client.post(f"/users/remove_like/{message.id}", follow_redirects=True)
-            self.assertEqual(response.status_code, 200)
+            response = client.post(f"/users/remove_like/{message.id}")
+            self.assertEqual(response.status_code, 302)
 
             likes = Likes.query.filter(Likes.message_id==message.id).all()
             # the like has been deleted
